@@ -1,0 +1,42 @@
+name: Deploy to NameCheap Server (Backend)
+
+on:
+  push:
+    branches:
+      - staging-laravel11
+  pull_request:
+    branches:
+      - staging-laravel11
+
+jobs:
+  deploy:
+    name: Setup Ubuntu latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout Action For Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MIRZA_HP_ELITEBOOK_UBUNTU_PRIVATE_SSH_KEY_FOR_NAMECHEAP }}
+
+      - name: Move To The App Root Directory | Git Pull | Composer Install | Artisan Commands
+        run: |
+            ssh -p ${{ secrets.PROPSEL_NAMECHEAP_PORT }} -o StrictHostKeyChecking=no ${{ secrets.PROPSEL_NAMECHEAP_USER }}@${{ secrets.PROPSEL_NAMECHEAP_HOST }} << 'EOF'
+            cd api.propsel.com/propsel-laravel/
+            git pull https://muhammadabdullahmirza:${{ secrets.GH_TOKEN }}@github.com/mirza-organization/propsel-laravel staging-laravel11
+
+            # 1st run composer install
+            composer install --optimize-autoloader --no-dev
+
+            # Other commands
+            vendor/bin/rector
+            vendor/bin/pint
+            composer dump-autoload
+            
+            # Cache everything at the end
+            php artisan optimize
+            EOF
+          
