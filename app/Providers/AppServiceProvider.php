@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\Sanctum\PersonalAccessToken;
-use App\Services\Contracts\EmailService;
 use App\Services\Contracts\ResponseService;
-use App\Services\EmailManagementService;
 use App\Services\JsonResponseService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\Sanctum;
 use Override;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
     #[Override]
     public function register(): void
     {
-        $this->app->bind(EmailService::class, EmailManagementService::class);
         $this->app->bind(ResponseService::class, JsonResponseService::class);
     }
 
@@ -32,8 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
-
-        RateLimiter::for('login', fn () => Limit::perMinutes(2, 3)->by(request()->input('email')));
+        RateLimiter::for('login', fn () => Limit::perMinutes(2, 5)->by(request()->input('email')));
     }
 }

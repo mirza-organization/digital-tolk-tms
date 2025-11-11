@@ -12,17 +12,11 @@ final class LoginUserAction
 {
     public function execute(array $credentials): array
     {
-        $user = User::getByEmail($credentials['email'], relations: ['subscription:customerId,status']);
+        $user = User::getByEmail($credentials['email']);
 
-        if (! $user instanceof User || ! Hash::check($credentials['password'], $user->password)) {
+        if (! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'error' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        if (! $user->hasVerifiedEmail()) {
-            throw ValidationException::withMessages([
-                'error' => ['Please verify your email address before logging in'],
+                'error' => ['The provided password is incorrect.'],
             ]);
         }
 

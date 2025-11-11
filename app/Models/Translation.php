@@ -37,6 +37,8 @@ class Translation extends Model
     public function toSearchableArray(): array
     {
         return [
+            'id' => $this->id,
+            'translator_id' => $this->translator_id,
             'text' => $this->text,
             'locale' => $this->locale,
             'tag' => $this->tag,
@@ -85,18 +87,17 @@ class Translation extends Model
     }
 
     public static function searchTranslations(
+        int $translatorId,
         string $text,
-        ?int $translatorId = null,
-        ?string $locale = null,
-        ?string $tag = null,
-        array $columns = ['*']
+        ?string $locale,
+        ?string $tag,
+        string $orderBy,
     ): Collection {
-        return self::select($columns)
-            ->where('text', 'LIKE', "%{$text}%")
-            ->when($translatorId, fn ($q) => $q->where('translator_id', $translatorId))
+        return self::search($text)
+            ->where('translator_id', $translatorId)
             ->when($locale, fn ($q) => $q->where('locale', $locale))
             ->when($tag, fn ($q) => $q->where('tag', $tag))
-            ->orderBy('id', 'desc')
+            ->orderBy('id', $orderBy)
             ->get();
     }
 }

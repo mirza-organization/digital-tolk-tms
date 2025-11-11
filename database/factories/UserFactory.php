@@ -24,7 +24,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => 'Mirza Abdullah Izhar',
-            'email' => 'mirzaabdullahizhar@digitaltolk.com',
+            'email' => 'mirzaabdullahizhar@digitaltolk.com',    
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
         ];

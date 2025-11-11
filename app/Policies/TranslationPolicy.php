@@ -6,15 +6,16 @@ namespace App\Policies;
 
 use App\Models\Translation;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TranslationPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(int $translatorId): bool
     {
-        return false;
+        return $translatorId === Auth::id();
     }
 
     /**
@@ -38,7 +39,7 @@ class TranslationPolicy
      */
     public function update(User $user, Translation $translation): bool
     {
-        return false;
+        return $user->id === $translation->translator_id;
     }
 
     /**

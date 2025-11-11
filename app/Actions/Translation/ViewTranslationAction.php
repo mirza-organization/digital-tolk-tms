@@ -13,11 +13,21 @@ final class ViewTranslationAction
     public function execute(array $filters): Translation|LengthAwarePaginator
     {
         if (isset($filters['id'])) {
-            return Translation::getById((int) $filters['id']);
+            $translation = Translation::getById((int) $filters['id']);
+            
+            // Ensure the translation belongs to the authenticated user
+            if ($translation->translator_id !== auth()->id()) {
+                abort(403, 'Unauthorized. You can only view your own translations.');
+            }
+            
+            return $translation;
         }
 
+        // If translator_id is not provided, automatically filter by authenticated user's id
+        $translatorId = $filters['translator_id'] ?? auth()->id();
+
         return Translation::getAll(
-            translatorId: (isset($filters['translator_id'])) ? (int) $filters['translator_id'] : null,
+            translatorId: (int) $translatorId,
             locale: $filters['locale'] ?? null,
             tag: $filters['tag'] ?? null,
             orderBy: $filters['order_by'] ?? OrderByEnum::DESC->value
