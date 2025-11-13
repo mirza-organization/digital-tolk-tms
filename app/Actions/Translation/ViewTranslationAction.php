@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions\Translation;
 
+use App\Enums\HttpStatusEnum;
 use App\Enums\OrderByEnum;
 use App\Models\Translation;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 final class ViewTranslationAction
 {
@@ -14,20 +16,17 @@ final class ViewTranslationAction
     {
         if (isset($filters['id'])) {
             $translation = Translation::getById((int) $filters['id']);
-            
+
             // Ensure the translation belongs to the authenticated user
-            if ($translation->translator_id !== auth()->id()) {
-                abort(403, 'Unauthorized. You can only view your own translations.');
+            if ($translation->translator_id !== Auth::id()) {
+                abort(HttpStatusEnum::UNAUTHORIZED, 'Unauthorized. You can only view your own translations.');
             }
-            
+
             return $translation;
         }
 
-        // If translator_id is not provided, automatically filter by authenticated user's id
-        $translatorId = $filters['translator_id'] ?? auth()->id();
-
         return Translation::getAll(
-            translatorId: (int) $translatorId,
+            translatorId: (isset($filters['translator_id'])) ? (int) $filters['translator_id'] : null,
             locale: $filters['locale'] ?? null,
             tag: $filters['tag'] ?? null,
             orderBy: $filters['order_by'] ?? OrderByEnum::DESC->value

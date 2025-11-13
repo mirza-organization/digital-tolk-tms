@@ -17,7 +17,9 @@ use Illuminate\Http\JsonResponse;
 
 class TranslationController extends Controller
 {
-    public function __construct(protected ResponseService $responseService) {}
+    public function __construct(protected ResponseService $responseService)
+    {
+    }
 
     /**
      * Display a listing of the resource.

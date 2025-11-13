@@ -14,7 +14,8 @@ use Laravel\Scout\Searchable;
 class Translation extends Model
 {
     /** @use HasFactory<TranslationFactory> */
-    use HasFactory, Searchable;
+    use HasFactory;
+    use Searchable;
 
     /**
      * The attributes that are mass assignable.

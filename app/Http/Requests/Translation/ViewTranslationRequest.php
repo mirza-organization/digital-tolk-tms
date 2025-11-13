@@ -13,7 +13,9 @@ use Illuminate\Validation\Rule;
 
 class ViewTranslationRequest extends FormRequest
 {
-    public function __construct(protected TranslationPolicy $translationPolicy) {}
+    public function __construct(protected TranslationPolicy $translationPolicy)
+    {
+    }
 
     /**
      * Determine if the user is authorized to make this request.

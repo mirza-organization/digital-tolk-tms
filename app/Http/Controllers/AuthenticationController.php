@@ -11,7 +11,9 @@ use Illuminate\Http\JsonResponse;
 
 class AuthenticationController extends Controller
 {
-    public function __construct(protected ResponseService $responseService) {}
+    public function __construct(protected ResponseService $responseService)
+    {
+    }
 
     /**
      * Display a listing of the resource.

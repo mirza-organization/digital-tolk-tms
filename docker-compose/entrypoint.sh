@@ -10,6 +10,7 @@ sleep 5
 
 #################################################################
 # Begin - Commands to run only once when the container is build
+# Uncomment the lines starting with "single #" 
 #################################################################
 # # Remove vendor and composer.lock
 # rm -rf /var/www/vendor /var/www/composer.lock
